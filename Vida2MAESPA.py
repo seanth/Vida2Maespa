@@ -9,6 +9,11 @@ theFile=open('Vida2MAESPA_Data/file_templates/confile_template.txt','r')
 theConfileTemp=theFile.read()
 theFile.close
 
+print "  Reading in points template..."
+theFile=open('Vida2MAESPA_Data/file_templates/points_template.txt','r')
+thePointsTemp=theFile.read()
+theFile.close
+
 print "  Reading in phy template..."
 theFile=open('Vida2MAESPA_Data/file_templates/phy_template.txt', 'r')
 thePhyTemp=theFile.read()
@@ -27,7 +32,7 @@ theFile.close
 #print theConfileTemp
 
 
-with open('test-300.csv') as theCSVFile:
+with open('test_files/test-300.csv') as theCSVFile:
 	print "  Reading in Vida simulation data..."
 	theFileData=csv.DictReader(theCSVFile)
 	#x max, min, y max, min of sample area
@@ -58,6 +63,7 @@ with open('test-300.csv') as theCSVFile:
 	theITargets=""
 	numbITargets=0
 	theBoarderEdge=50
+	theTallestTree=0.0
 	print "Beginning data parsing (this might take some time)..."
 	for row in theFileData:
 		indivTrunkHeight=0
@@ -87,7 +93,11 @@ with open('test-300.csv') as theCSVFile:
 		indivDBH="%s\n" % (row[' Diameter Stem'])
 		allDBH=allDBH+indivDBH
 
-		indivBoleHeight="%d\n" % (float(row[' Height of Plant'])-float(row[' Radius Canopy']))
+		treeHeight=float(row[' Height of Plant'])
+		if (theTallestTree<treeHeight):
+			theTallestTree=round(treeHeight)
+
+		indivBoleHeight="%d\n" % (treeHeight-float(row[' Radius Canopy']))
 		allBoleHeight=allBoleHeight+indivBoleHeight
 
 		#indivCanopyArea="%d\n" % (3.14*(float(row[' Radius Canopy'])**2.0))#this is just the projected area
@@ -136,6 +146,36 @@ theWriteFile.close()
 print "  Writing confile.dat..."
 theWriteFile=open('confile.dat', 'w')
 theWriteFile.write( theConfileTemp % (numbAllSpecies, theSpeciesNameString, thePhyFiles, theStrFiles, numbITargets, theITargets, theBoarderEdge))
+theWriteFile.close()
+
+###Make the sensor points
+numbPoints=500
+pointDistance=geometry_utils.placePointsInGrid(numbPoints, theWorldSize)
+prevX=-theWorldSize/2.0
+prevY= theWorldSize/2.0
+prevZ= 0.0
+theXYPoints=[]
+theXYZPoints=[]
+for i in range(numbPoints):
+	x=prevX+pointDistance
+	y=prevY-pointDistance
+	if x+pointDistance>=(theWorldSize/2.0):
+		prevX=-theWorldSize/2.0
+		prevY= prevY-pointDistance
+	else:
+		prevX=x
+	theXYPoints.append ("%f %f" % (x, y))
+#z markers up a to the tallest tree height+1m, every 10 evenly spaced units
+theDistance=int(theTallestTree+1)/10
+#theDistance=int(10)/10
+for j in range(0, int(theTallestTree+theDistance), theDistance):
+	for coords in theXYPoints:
+		theXYZPoints.append(coords+" %f" % j)
+		#print coords+" %f" % j
+numbPoints=len(theXYZPoints)
+print "  Writing points.dat..."
+theWriteFile=open('points.dat', 'w')
+theWriteFile.write( thePointsTemp % (numbPoints, '\n'.join(theXYZPoints)))
 theWriteFile.close()
 
 print "***File generation complete***"

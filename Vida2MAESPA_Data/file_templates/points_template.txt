@@ -1,0 +1,8 @@
+&CONTROL
+NOPOINTS = %i
+INPUTTYPE = 1
+/
+&XYZ
+COORDS =
+%s
+/

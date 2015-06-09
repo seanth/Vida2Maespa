@@ -8,10 +8,10 @@ Working:
 
      -Makes phy and str files, but these are just copies of the templates
 
+     -Output a points.dat file
+
 To do:
      -Include argument parsing so you can easily define the file to process from the command line
-
-     -Output a points.dat file
 
      -Output a dxf based on the points.dat file
 
