@@ -1,31 +1,43 @@
+import sys
 import csv
+sys.path.append("Vida2MAESPA_Data")
+import geometry_utils
 
 #read in the template files
-
-theFile=open('file_templates/confile_template.txt','r')
+print "  Reading in confile template..."
+theFile=open('Vida2MAESPA_Data/file_templates/confile_template.txt','r')
 theConfileTemp=theFile.read()
 theFile.close
 
-theFile=open('file_templates/phy_template.txt', 'r')
+print "  Reading in phy template..."
+theFile=open('Vida2MAESPA_Data/file_templates/phy_template.txt', 'r')
 thePhyTemp=theFile.read()
 theFile.close
 
-theFile=open('file_templates/str_template.txt', 'r')
+print "  Reading in str template..."
+theFile=open('Vida2MAESPA_Data/file_templates/str_template.txt', 'r')
 theStrTemp=theFile.read()
 theFile.close
 
-theFile=open('file_templates/trees_template.txt', 'r')
+print "  Reading in trees template..."
+theFile=open('Vida2MAESPA_Data/file_templates/trees_template.txt', 'r')
 theTreesTemp=theFile.read()
 theFile.close
 
-print theTreesTemp
+#print theConfileTemp
 
 
-with open('smtest-500.csv') as theCSVFile:
+with open('test-300.csv') as theCSVFile:
+	print "  Reading in Vida simulation data..."
 	theFileData=csv.DictReader(theCSVFile)
+	#x max, min, y max, min of sample area
+	xSampleMin=-200.0
+	xSampleMax=200.0
+	ySampleMin=-200.0
+	ySampleMax=200.0
 	#calculate the x min, max, y min, max
-	theWorldSize=500
-	theHalfSize=theWorldSize/2
+	theWorldSize=500.0
+	theHalfSize=theWorldSize/2.0
 	xMin=-theHalfSize
 	yMin=-theHalfSize
 	xMax=theHalfSize
@@ -39,13 +51,30 @@ with open('smtest-500.csv') as theCSVFile:
 	allBoleHeight=""
 	allCanopyArea=""
 	theSpeciesList=[]
+	theSpeciesNameString=""
+	thePhyFiles=""
+	theStrFiles=""
+	numbAllSpecies=0
+	theITargets=""
+	numbITargets=0
+	theBoarderEdge=50
+	print "Beginning data parsing (this might take some time)..."
 	for row in theFileData:
 		indivTrunkHeight=0
 		indivCanopyArea=0
 
+		#for trees.dat
 		numbTrees=numbTrees+1
-		indivXY="%s %s\n" % (row[' X Location'], row[' Y Location'])
+		theTreeX=float(row[' X Location'])
+		theTreeY=float(row[' Y Location'])
+		indivXY="%s %s\n" % (theTreeX, theTreeY)
 		allXY=allXY+indivXY
+
+		#for confile
+		if (theTreeX<=xSampleMax and theTreeX>=xSampleMin):
+			if (theTreeY<=ySampleMax and theTreeY>=ySampleMin):
+				theITargets=theITargets+"'"+str(numbTrees)+"' "
+				numbITargets=numbITargets+1
 
 		indivCanopyRadiusX="%s\n" % (row[' Radius Canopy'])
 		allXRadius=allXRadius+indivCanopyRadiusX
@@ -61,7 +90,8 @@ with open('smtest-500.csv') as theCSVFile:
 		indivBoleHeight="%d\n" % (float(row[' Height of Plant'])-float(row[' Radius Canopy']))
 		allBoleHeight=allBoleHeight+indivBoleHeight
 
-		indivCanopyArea="%d\n" % (3.14*(float(row[' Radius Canopy'])**2.0))
+		#indivCanopyArea="%d\n" % (3.14*(float(row[' Radius Canopy'])**2.0))#this is just the projected area
+		indivCanopyArea="%d\n" % (3.14*(float(row[' Radius Canopy'])**2.0)*2.0)#this should be the area of a hemisphere
 		allCanopyArea=allCanopyArea+indivCanopyArea
 
 		theSpeciesList.append(row[' Species'])
@@ -71,9 +101,25 @@ with open('smtest-500.csv') as theCSVFile:
 
 	##make the list of species for use in confile.dat and trees.dat
 	theSpeciesSet=set(theSpeciesList)
+	numbAllSpecies=len(theSpeciesSet) #for confile
 	numbSpecies=1
 	theSpeciesDict={}
 	for x in theSpeciesSet:
+		theSpeciesNameString=theSpeciesNameString+"'"+x+"' " #for confile
+		thePhyName=x+"_phy.dat"
+		theStrName=x+"_str.dat"
+		###needs to be expanded upon######
+		print "  Writing "+thePhyName+"..."
+		theWriteFile=open(thePhyName, 'w')
+		theWriteFile.write(theStrTemp)
+		theWriteFile.close()
+		print "  Writing "+thePhyName+"..."
+		theWriteFile=open(theStrName, 'w')
+		theWriteFile.write(theStrTemp)
+		theWriteFile.close()
+		##################################
+		thePhyFiles=thePhyFiles+"'"+thePhyName+"'' " #for confile
+		theStrFiles=theStrFiles+"'"+theStrName+"' " #for confile
 		theSpeciesDict[x] = numbSpecies
 		numbSpecies=numbSpecies+1
 	allSpecies=""
@@ -82,6 +128,17 @@ with open('smtest-500.csv') as theCSVFile:
 	#print allSpecies
 
 
+print "  Writing trees.dat..."
+theWriteFile=open('trees.dat', 'w')
+theWriteFile.write(theTreesTemp % (xMin, yMin, xMax, yMax, numbTrees, allSpecies, allXY, allXRadius, allXRadius, allXRadius, allDBH, allBoleHeight, allCanopyArea))
+theWriteFile.close()
+
+print "  Writing confile.dat..."
+theWriteFile=open('confile.dat', 'w')
+theWriteFile.write( theConfileTemp % (numbAllSpecies, theSpeciesNameString, thePhyFiles, theStrFiles, numbITargets, theITargets, theBoarderEdge))
+theWriteFile.close()
+
+print "***File generation complete***"
 
 
-print theTreesTemp % (xMin, yMin, xMax, yMax, numbTrees, allSpecies, allXY, allXRadius, allXRadius, allXRadius, allDBH, allBoleHeight, allCanopyArea)
+

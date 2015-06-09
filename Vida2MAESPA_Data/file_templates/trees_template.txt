@@ -1,0 +1,77 @@
+!***Plot Details
+&Plot
+x0 = %i
+y0 = %i
+xmax = %i
+ymax = %i 
+xslope = 0
+yslope = 0
+bearing = 0
+notrees = %i
+/
+
+
+!***Plot aerodynamics
+&aerodyn			
+zht = 10
+zpd = 7
+z0ht = 2
+/
+
+!***Multispecies list
+&speclist
+ispecies=
+%s
+/
+
+!***X & Y Coordinates
+&xy
+xycoords=
+%s
+/
+
+!***Tree Dimensions for Individual TreesDotDatText
+crown	radius	in	the	x-direction.
+&indivradx				
+nodates	= 1
+values	= 
+%s
+/
+
+crown	radius	in	the	y-direction.
+&indivrady				
+nodates	=	1		
+values	=
+%s
+/
+
+crown	height	for	each	tree.
+&indivhtcrown				
+nodates	=	1		
+values	= 
+%s
+/
+
+stem	diameter	for	each	tree
+&indivdiam				
+nodates	=	1		
+values	=
+%s
+/
+
+trunk	height	
+&indivhttrunk		
+nodates	=	1
+values	=
+%s
+/
+
+leaf	area	
+&indivlarea		
+nodates	=	1
+values	=
+%s
+/
+
+!***Phenology of leaf area development
+/
