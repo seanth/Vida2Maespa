@@ -1,4 +1,8 @@
-Bago BB gs
+Vida2Maespa
+
+&flocations
+fout_dir='output'
+/
 	
 flags to indicate which input  output files to use.
 &control
@@ -8,6 +12,10 @@ ioresp=1
 iohist=1
 isimus=0
 ipoints=0
+/
+
+&histo
+binsize=25
 /
 
 &species

@@ -32,7 +32,7 @@ theFile.close
 #print theConfileTemp
 
 
-with open('test_files/test-300.csv') as theCSVFile:
+with open('test_files/test-500.csv') as theCSVFile:
 	print "  Reading in Vida simulation data..."
 	theFileData=csv.DictReader(theCSVFile)
 	#x max, min, y max, min of sample area
@@ -97,11 +97,11 @@ with open('test_files/test-300.csv') as theCSVFile:
 		if (theTallestTree<treeHeight):
 			theTallestTree=round(treeHeight)
 
-		indivBoleHeight="%d\n" % (treeHeight-float(row[' Radius Canopy']))
+		indivBoleHeight="%f\n" % (treeHeight-float(row[' Radius Canopy']))
 		allBoleHeight=allBoleHeight+indivBoleHeight
 
-		#indivCanopyArea="%d\n" % (3.14*(float(row[' Radius Canopy'])**2.0))#this is just the projected area
-		indivCanopyArea="%d\n" % (3.14*(float(row[' Radius Canopy'])**2.0)*2.0)#this should be the area of a hemisphere
+		#indivCanopyArea="%f\n" % (3.14*(float(row[' Radius Canopy'])**2.0))#this is just the projected area
+		indivCanopyArea="%f\n" % (3.14*(float(row[' Radius Canopy'])**2.0)*2.0)#this should be the area of a hemisphere
 		allCanopyArea=allCanopyArea+indivCanopyArea
 
 		theSpeciesList.append(row[' Species'])
@@ -115,15 +115,15 @@ with open('test_files/test-300.csv') as theCSVFile:
 	numbSpecies=1
 	theSpeciesDict={}
 	for x in theSpeciesSet:
-		theSpeciesNameString=theSpeciesNameString+"'"+x+"' " #for confile
+		theSpeciesNameString=theSpeciesNameString+x+" " #for confile
 		thePhyName=x+"_phy.dat"
 		theStrName=x+"_str.dat"
 		###needs to be expanded upon######
 		print "  Writing "+thePhyName+"..."
 		theWriteFile=open(thePhyName, 'w')
-		theWriteFile.write(theStrTemp)
+		theWriteFile.write(thePhyTemp)
 		theWriteFile.close()
-		print "  Writing "+thePhyName+"..."
+		print "  Writing "+theStrName+"..."
 		theWriteFile=open(theStrName, 'w')
 		theWriteFile.write(theStrTemp)
 		theWriteFile.close()
@@ -149,7 +149,7 @@ theWriteFile.write( theConfileTemp % (numbAllSpecies, theSpeciesNameString, theP
 theWriteFile.close()
 
 ###Make the sensor points
-numbPoints=500
+numbPoints=50
 pointDistance=geometry_utils.placePointsInGrid(numbPoints, theWorldSize)
 prevX=-theWorldSize/2.0
 prevY= theWorldSize/2.0
@@ -166,6 +166,7 @@ for i in range(numbPoints):
 		prevX=x
 	theXYPoints.append ("%f %f" % (x, y))
 #z markers up a to the tallest tree height+1m, every 10 evenly spaced units
+theTallestTree=60 #this is just to keep the sensor grid consistant between multiple simulations
 theDistance=int(theTallestTree+1)/10
 #theDistance=int(10)/10
 for j in range(0, int(theTallestTree+theDistance), theDistance):
