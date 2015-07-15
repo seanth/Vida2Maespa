@@ -10,8 +10,12 @@ Working:
 
      -Output a points.dat file
 
+     -Provides a key file for mapping MAESPA indexed output to VIDA tree UIDs
+
+     -Argument parsing so you can easily define the file to process from the command line
+
 To do:
-     -Include argument parsing so you can easily define the file to process from the command line
+     
 
      -Output a dxf based on the points.dat file
 
