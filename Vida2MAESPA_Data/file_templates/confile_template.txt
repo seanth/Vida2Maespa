@@ -1,17 +1,19 @@
 Vida2Maespa
 
 &flocations
-fout_dir='output'
+fout_dir='output_files/%s-'
+fin_dir='input_files/'
 /
 	
 flags to indicate which input  output files to use.
 &control
-iohrly=1
+iohrly=2
 iotutd=9       
 ioresp=1      
 iohist=1
 isimus=0
 ipoints=0
+isunla=1
 /
 
 &histo
@@ -28,8 +30,8 @@ strfiles = %s
 dates for simulation start and end (must overlap with met file). 
 Date format: DD/MM/YY
 &dates
-startdate = '01/01/01'
-enddate = '01/01/01'
+startdate = '01/01/03'
+enddate = '01/01/03'
 /
 	
 indicate which target tree(s) to use. 

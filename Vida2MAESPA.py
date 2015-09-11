@@ -1,4 +1,5 @@
 import sys
+import os
 import csv
 import argparse
 import ConfigParser
@@ -103,8 +104,16 @@ def main():
 		#this is used in confile.dat if area sample is not listed
 		theBoarderEdge=50
 		theTallestTree=0.0
+
+		print "Marking target directories..."
+		#this could be smarter and get the values from a run argument
+		theOutputDir='Maespa-'+simulationName+'/input_files/'
+		theOutputDir1='Maespa-'+simulationName+'/'
+		if not os.path.exists(theOutputDir): os.makedirs(theOutputDir)
+		if not os.path.exists('Maespa-'+simulationName+'/output_files'): os.makedirs('Maespa-'+simulationName+'/output_files')
+
 		print "Beginning data parsing (this might take some time)...\n"
-		i = 1
+		#i = 1
 		for row in theFileData:
 			indivTrunkHeight=0
 			indivCanopyArea=0
@@ -121,11 +130,12 @@ def main():
 			if (theTreeX<=xSampleMax and theTreeX>=xSampleMin):
 				if (theTreeY<=ySampleMax and theTreeY>=ySampleMin):
 					theITargets=theITargets+str(numbTrees)+" "
+					print numbTrees
 					numbITargets=numbITargets+1
 					#for the MAESPA <-->Vida tree id key file
-					theUIDandIndex = "%s, %i" % (row[' Plant Name'], i) 
+					theUIDandIndex = "%s, %i" % (row[' Plant Name'], numbTrees) 
 					allVidaUID.append(theUIDandIndex)
-					i=i+1
+					#i=i+1
 
 			indivCanopyRadiusX="%s\n" % (row[' Radius Canopy'])
 			allXRadius=allXRadius+indivCanopyRadiusX
@@ -150,6 +160,8 @@ def main():
 			allCanopyArea=allCanopyArea+indivCanopyArea
 
 			theSpeciesList.append(row[' Species'])
+		if theITargets.strip()=="":
+			print "****EXTREME WARNING: NO TARGET TREES FOUND. MAESPA WILL NOT WORK CORRECTLY****"
 
 		#for row in theFileData:
 		#	print(row['X Location'], row['Y Location'])
@@ -168,11 +180,11 @@ def main():
 			theStrName=theStrName.replace(" ", "_")
 			###needs to be expanded upon######
 			print "  Writing "+thePhyName+"..."
-			theWriteFile=open(thePhyName, 'w')
+			theWriteFile=open(theOutputDir+thePhyName, 'w')
 			theWriteFile.write(thePhyTemp)
 			theWriteFile.close()
 			print "  Writing "+theStrName+"..."
-			theWriteFile=open(theStrName, 'w')
+			theWriteFile=open(theOutputDir+theStrName, 'w')
 			theWriteFile.write(theStrTemp)
 			theWriteFile.close()
 			##################################
@@ -185,19 +197,18 @@ def main():
 			allSpecies=allSpecies+"%i\n" % (theSpeciesDict[x])
 		#print allSpecies
 
-
 	print "  Writing trees.dat..."
-	theWriteFile=open('trees.dat', 'w')
+	theWriteFile=open(theOutputDir+'trees.dat', 'w')
 	theWriteFile.write(theTreesTemp % (xMin, yMin, xMax, yMax, numbTrees, allSpecies, allXY, allXRadius, allXRadius, allXRadius, allDBH, allBoleHeight, allCanopyArea))
 	theWriteFile.close()
 
 	print "  Writing confile.dat..."
-	theWriteFile=open('confile.dat', 'w')
-	theWriteFile.write( theConfileTemp % (numbAllSpecies, theSpeciesNameString, thePhyFiles, theStrFiles, numbITargets, theITargets, theBoarderEdge))
+	theWriteFile=open(theOutputDir1+'confile.dat', 'w')
+	theWriteFile.write( theConfileTemp % (simulationName, numbAllSpecies, theSpeciesNameString, thePhyFiles, theStrFiles, numbITargets, theITargets, theBoarderEdge))
 	theWriteFile.close()
 
 	print "  Writing key index file..."
-	theWriteFile = open('UIDkey.csv', 'w')
+	theWriteFile = open(theOutputDir+'UIDkey.csv', 'w')
 	for anItem in allVidaUID:
 		theWriteFile.write("%s\n" % anItem)
 		#print>>theWriteFile, anItem
@@ -231,11 +242,12 @@ def main():
 			#print coords+" %f" % j
 	numbPoints=len(theXYZPoints)
 	print "  Writing points.dat..."
-	theWriteFile=open('points.dat', 'w')
+	theWriteFile=open(theOutputDir+'points.dat', 'w')
 	theWriteFile.write( thePointsTemp % (numbPoints, '\n'.join(theXYZPoints)))
 	theWriteFile.close()
 
 	print "***File generation complete***"
+	print "***REMEMBER TO COPY MET AND WATPARS FILES INTO THE GENERATED INPUT DIRECTORY***"
 
 if __name__ == '__main__':
 	###Argument parsing
