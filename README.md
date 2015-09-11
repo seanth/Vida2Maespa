@@ -18,7 +18,3 @@ To do:
      
 
      -Output a dxf based on the points.dat file
-
-     -Produce meaningful phy files
-     
-     -Produce meaningful str files
