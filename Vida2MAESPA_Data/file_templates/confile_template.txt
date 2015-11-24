@@ -14,6 +14,8 @@ iohist=1
 isimus=0
 ipoints=0
 isunla=1
+verbose=1
+headers=0
 /
 
 &histo
@@ -57,5 +59,6 @@ modelrd = 0
 modeljm = 0
 itermax = 99
 modelss = 0
+tLeafCalc = 3
 /
 
