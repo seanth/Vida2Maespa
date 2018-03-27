@@ -56,9 +56,11 @@ choice of submodels.
 &model
 modelgs = 2
 modelrd = 0
+modelrw = 0 			!If set to 1, need to parameterize &COLLWResp in phy.dat
 modeljm = 0
 itermax = 99
 modelss = 0
-tLeafCalc = 3
+tLeafCalc = 1
+allomCalc = 1
 /
 
