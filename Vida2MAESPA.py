@@ -151,8 +151,13 @@ def main():
 			treeHeight=float(row[' Height of Plant'])
 			if (theTallestTree<treeHeight):
 				theTallestTree=round(treeHeight)
-
 			indivBoleHeight="%f\n" % (treeHeight-float(row[' Radius Canopy']))
+			indivBoleHeight=treeHeight-float(row[' Radius Canopy'])
+			if indivBoleHeight<=0.0: 
+				print "****WARNING: Bole height for tree %i was less than zero. Set to zero" % numbTrees
+				indivBoleHeight = 0.0
+			indivBoleHeight="%f\n" % indivBoleHeight
+
 			allBoleHeight=allBoleHeight+indivBoleHeight
 
 			#indivCanopyArea="%f\n" % (3.14*(float(row[' Radius Canopy'])**2.0))#this is just the projected area
