@@ -41,27 +41,27 @@ for i in theConfig.items(theConfigSection):
 def main():
 	#read in the template files
 	print "  Reading in confile template..."
-	theFile=open('Vida2MAESPA_Data/file_templates/confile_template.txt','r')
+	theFile=open('Vida2MAESPA_Data/file_templates/confile_template.txt','rb')
 	theConfileTemp=theFile.read()
 	theFile.close
 
 	print "  Reading in points template..."
-	theFile=open('Vida2MAESPA_Data/file_templates/points_template.txt','r')
+	theFile=open('Vida2MAESPA_Data/file_templates/points_template.txt','rb')
 	thePointsTemp=theFile.read()
 	theFile.close
 
 	print "  Reading in phy template..."
-	theFile=open('Vida2MAESPA_Data/file_templates/phy_template.txt', 'r')
+	theFile=open('Vida2MAESPA_Data/file_templates/phy_template.txt', 'rb')
 	thePhyTemp=theFile.read()
 	theFile.close
 
 	print "  Reading in str template..."
-	theFile=open('Vida2MAESPA_Data/file_templates/str_template.txt', 'r')
+	theFile=open('Vida2MAESPA_Data/file_templates/str_template.txt', 'rb')
 	theStrTemp=theFile.read()
 	theFile.close
 
 	print "  Reading in trees template..."
-	theFile=open('Vida2MAESPA_Data/file_templates/trees_template.txt', 'r')
+	theFile=open('Vida2MAESPA_Data/file_templates/trees_template.txt', 'rb')
 	theTreesTemp=theFile.read()
 	theFile.close
 
@@ -185,11 +185,11 @@ def main():
 			theStrName=theStrName.replace(" ", "_")
 			###needs to be expanded upon######
 			print "  Writing "+thePhyName+"..."
-			theWriteFile=open(theOutputDir+thePhyName, 'w')
+			theWriteFile=open(theOutputDir+thePhyName, 'wb')
 			theWriteFile.write(thePhyTemp)
 			theWriteFile.close()
 			print "  Writing "+theStrName+"..."
-			theWriteFile=open(theOutputDir+theStrName, 'w')
+			theWriteFile=open(theOutputDir+theStrName, 'wb')
 			theWriteFile.write(theStrTemp)
 			theWriteFile.close()
 			##################################
@@ -203,17 +203,17 @@ def main():
 		#print allSpecies
 
 	print "  Writing trees.dat..."
-	theWriteFile=open(theOutputDir+'trees.dat', 'w')
+	theWriteFile=open(theOutputDir+'trees.dat', 'wb')
 	theWriteFile.write(theTreesTemp % (xMin, yMin, xMax, yMax, numbTrees, allSpecies, allXY, allXRadius, allXRadius, allXRadius, allDBH, allBoleHeight, allCanopyArea))
 	theWriteFile.close()
 
 	print "  Writing confile.dat..."
-	theWriteFile=open(theOutputDir1+'confile.dat', 'w')
+	theWriteFile=open(theOutputDir1+'confile.dat', 'wb')
 	theWriteFile.write( theConfileTemp % (simulationName, numbAllSpecies, theSpeciesNameString, thePhyFiles, theStrFiles, numbITargets, theITargets, theBoarderEdge))
 	theWriteFile.close()
 
 	print "  Writing key index file..."
-	theWriteFile = open(theOutputDir+'UIDkey.csv', 'w')
+	theWriteFile = open(theOutputDir+'UIDkey.csv', 'wb')
 	for anItem in allVidaUID:
 		theWriteFile.write("%s\n" % anItem)
 		#print>>theWriteFile, anItem
@@ -247,7 +247,7 @@ def main():
 			#print coords+" %f" % j
 	numbPoints=len(theXYZPoints)
 	print "  Writing points.dat..."
-	theWriteFile=open(theOutputDir+'points.dat', 'w')
+	theWriteFile=open(theOutputDir+'points.dat', 'wb')
 	theWriteFile.write( thePointsTemp % (numbPoints, '\n'.join(theXYZPoints)))
 	theWriteFile.close()
 
